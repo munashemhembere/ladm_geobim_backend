@@ -3,8 +3,8 @@ from fastapi.responses import RedirectResponse
 from sqlalchemy.orm import Session
 from sqlalchemy import select
 import json
-from database import SessionLocal
-from models import SpatialUnit, BAUnit, RRR, Party, Source
+from app.database import SessionLocal
+from app.models import SpatialUnit, BAUnit, RRR, Party, Source
 
 app = FastAPI()
 
@@ -13,7 +13,8 @@ app = FastAPI()
 # -------------------------
 @app.get("/")
 def root():
-    return RedirectResponse (url="/docs")
+    return RedirectResponse(url="/docs")
+
 # -------------------------
 # DB Session Dependency
 # -------------------------
@@ -52,7 +53,6 @@ def get_spatialunits(db: Session = Depends(get_db)):
 # -------------------------
 @app.get("/traceability/{uid}")
 def get_traceability(uid: str, db: Session = Depends(get_db)):
-    # Step 1: Find the SpatialUnit
     su = db.query(SpatialUnit).filter(SpatialUnit.uid == uid).first()
     if not su:
         return {"error": f"SpatialUnit {uid} not found"}
@@ -66,7 +66,6 @@ def get_traceability(uid: str, db: Session = Depends(get_db)):
         "baunits": []
     }
 
-    # Step 2: For each BAUnit linked to this SpatialUnit
     for ba in su.baunits:
         baunit_info = {
             "baunit_id": ba.baunit_id,
@@ -75,7 +74,6 @@ def get_traceability(uid: str, db: Session = Depends(get_db)):
             "rrrs": []
         }
 
-        # Step 3: For each RRR linked to this BAUnit
         for r in ba.rrrs:
             rrr_info = {
                 "rrr_id": r.rrr_id,

@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from models import SpatialUnit, BAUnit, RRR, Party, Source
+from app.models import SpatialUnit, BAUnit, RRR, Party, Source
 
 # Create a new SpatialUnit
 def create_spatial_unit(db: Session, spatial_unit: SpatialUnit):
@@ -32,6 +32,4 @@ def delete_spatial_unit(db: Session, uid: str):
     if spatial_unit:
         db.delete(spatial_unit)
         db.commit()
-    return spatial_unit
-
-# Similar CRUD functions can be implemented for BAUnit, RRR, Party, and Source models.
+    return spatial_unitcd
